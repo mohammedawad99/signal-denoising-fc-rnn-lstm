@@ -1,0 +1,91 @@
+# TODO — HW1 Checklist
+
+A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match the plan phases.
+
+## Phase 0 — Planning and skeleton
+- [x] Read `docs/ASSIGNMENT_NOTES.md` and pull constraints into PRDs.
+- [x] Write `docs/PRD.md`.
+- [x] Write `docs/PRD_dataset.md`.
+- [x] Write `docs/PRD_models.md`.
+- [x] Write `docs/PLAN.md`.
+- [x] Write `docs/TODO.md`.
+- [x] Initialize `README.md` as a lab-report outline.
+- [ ] Commit Phase 0 artefacts.
+- [ ] Confirm interpretation with the instructor before any code is written.
+
+## Phase 1 — Configuration and shared utilities
+- [ ] `src/sine_denoising/shared/config.py` (pydantic configs).
+- [ ] `src/sine_denoising/shared/seeding.py` (`set_seed`).
+- [ ] `src/sine_denoising/shared/types.py` (split-array record types).
+- [ ] `config/dataset.yaml`, `config/training.yaml`.
+- [ ] `tests/unit/shared/test_config.py`.
+- [ ] `tests/unit/shared/test_seeding.py`.
+- [ ] Commit Phase 1.
+
+## Phase 2 — Dataset generation and loading
+- [ ] `src/sine_denoising/services/signal.py` (`make_signal`).
+- [ ] `src/sine_denoising/services/encoding.py` (`one_hot`, `window`).
+- [ ] `src/sine_denoising/services/dataset_builder.py`.
+- [ ] `src/sine_denoising/services/dataset_loader.py`.
+- [ ] `src/sine_denoising/sdk/build_dataset.py` CLI.
+- [ ] Generate `data/generated/dataset.npz` once and verify.
+- [ ] `tests/unit/services/test_signal.py`.
+- [ ] `tests/unit/services/test_encoding.py`.
+- [ ] `tests/unit/services/test_dataset_builder.py` (split disjointness, stratification).
+- [ ] Commit Phase 2.
+
+## Phase 3 — Models
+- [ ] `src/sine_denoising/models/base.py`.
+- [ ] `src/sine_denoising/models/fc.py`.
+- [ ] `src/sine_denoising/models/rnn.py`.
+- [ ] `src/sine_denoising/models/lstm.py`.
+- [ ] Update `src/sine_denoising/models/__init__.py` exports.
+- [ ] `tests/unit/models/test_fc.py` (shape + smoke).
+- [ ] `tests/unit/models/test_rnn.py`.
+- [ ] `tests/unit/models/test_lstm.py`.
+- [ ] Commit Phase 3.
+
+## Phase 4 — Training loop
+- [ ] `src/sine_denoising/training/loops.py`.
+- [ ] `src/sine_denoising/training/trainer.py`.
+- [ ] `src/sine_denoising/sdk/train.py` CLI.
+- [ ] `tests/unit/training/test_loops.py` (overfitting test on a tiny batch).
+- [ ] `tests/unit/training/test_trainer.py` (early stopping, checkpoint round-trip).
+- [ ] Run training for FC, RNN, LSTM (full schedule).
+- [ ] Save checkpoints under `results/`.
+- [ ] Commit Phase 4.
+
+## Phase 5 — Evaluation and plotting
+- [ ] `src/sine_denoising/evaluation/metrics.py`.
+- [ ] `src/sine_denoising/evaluation/plots.py`.
+- [ ] `src/sine_denoising/evaluation/report.py`.
+- [ ] `src/sine_denoising/sdk/evaluate.py` CLI.
+- [ ] `tests/unit/evaluation/test_metrics.py`.
+- [ ] `tests/unit/evaluation/test_plots.py` (output file exists, non-empty).
+- [ ] Run evaluation, write `results/summary.json` + figures.
+- [ ] Commit Phase 5.
+
+## Phase 6 — Lab report
+- [ ] Fill in README "Experimental setup" with concrete config values.
+- [ ] Fill in "Results" table with real numbers from `summary.json`.
+- [ ] Embed loss-curve figure(s).
+- [ ] Embed reconstruction figures.
+- [ ] Write "Discussion" grounded in the actual numbers (no boilerplate).
+- [ ] Write "Conclusion" + "Limitations" + "Future work".
+- [ ] Add link to the GitHub repository.
+- [ ] Commit Phase 6.
+
+## Phase 7 — Quality gate and packaging
+- [ ] `uv sync` runs clean.
+- [ ] `uv run ruff check .` passes.
+- [ ] `uv run mypy src` passes.
+- [ ] `uv run pytest --cov` ≥ 85%.
+- [ ] Sanity-check that every Python file is < 150 lines.
+- [ ] Final commit.
+- [ ] Build PDF from README and confirm the repo link is present.
+
+## Cross-cutting reminders
+- After every phase: `git status`, `git diff`, then a focused commit. No omnibus WIP commits.
+- If any assumption from the PRDs changes, edit the PRD *first*, then the code.
+- If a file approaches 150 lines, split it before merging.
+- Generated artefacts go to `data/generated/`, `results/`, `assets/generated/` (all gitignored).
