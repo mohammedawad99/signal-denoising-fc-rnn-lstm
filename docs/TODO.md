@@ -51,12 +51,12 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 ## Phase 4 — Training loop
 - [x] `src/sine_denoising/training/loops.py`.
 - [x] `src/sine_denoising/training/trainer.py`.
-- [ ] `src/sine_denoising/sdk/train.py` CLI.
+- [x] `src/sine_denoising/sdk/train.py` CLI.
 - [x] `tests/unit/training/test_loops.py` (overfitting test on a tiny batch).
 - [x] `tests/unit/training/test_trainer.py` (early stopping, checkpoint round-trip).
 - [ ] Run training for FC, RNN, LSTM (full schedule).
 - [ ] Save checkpoints under `results/`.
-- [ ] Commit Phase 4.
+- [x] Commit Phase 4.
 
 ## Phase 5 — Evaluation and plotting
 - [ ] `src/sine_denoising/evaluation/metrics.py`.
