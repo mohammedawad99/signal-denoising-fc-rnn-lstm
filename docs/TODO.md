@@ -10,7 +10,7 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Write `docs/PLAN.md`.
 - [x] Write `docs/TODO.md`.
 - [x] Initialize `README.md` as a lab-report outline.
-- [ ] Commit Phase 0 artefacts.
+- [x] Commit Phase 0 artefacts.
 - [ ] Confirm interpretation with the instructor before any code is written.
 
 ## Phase 1 — Configuration and shared utilities
