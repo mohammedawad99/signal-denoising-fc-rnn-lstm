@@ -24,14 +24,14 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Commit Phase 1.
 
 ## Phase 2 — Dataset generation and loading
-- [ ] `src/sine_denoising/services/signal.py` (`make_signal`).
-- [ ] `src/sine_denoising/services/encoding.py` (`one_hot`, `window`).
+- [x] `src/sine_denoising/services/signal.py` (`make_signal`).
+- [x] `src/sine_denoising/services/encoding.py` (`one_hot`, `window`).
 - [ ] `src/sine_denoising/services/dataset_builder.py`.
 - [ ] `src/sine_denoising/services/dataset_loader.py`.
 - [ ] `src/sine_denoising/sdk/build_dataset.py` CLI.
 - [ ] Generate `data/generated/dataset.npz` once and verify.
-- [ ] `tests/unit/services/test_signal.py`.
-- [ ] `tests/unit/services/test_encoding.py`.
+- [x] `tests/unit/services/test_signal.py`.
+- [x] `tests/unit/services/test_encoding.py`.
 - [ ] `tests/unit/services/test_dataset_builder.py` (split disjointness, stratification).
 - [ ] Commit Phase 2.
 
