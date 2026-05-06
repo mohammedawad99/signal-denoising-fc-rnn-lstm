@@ -14,13 +14,14 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [ ] Confirm interpretation with the instructor before any code is written.
 
 ## Phase 1 — Configuration and shared utilities
-- [ ] `src/sine_denoising/shared/config.py` (pydantic configs).
-- [ ] `src/sine_denoising/shared/seeding.py` (`set_seed`).
-- [ ] `src/sine_denoising/shared/types.py` (split-array record types).
-- [ ] `config/dataset.yaml`, `config/training.yaml`.
-- [ ] `tests/unit/shared/test_config.py`.
-- [ ] `tests/unit/shared/test_seeding.py`.
-- [ ] Commit Phase 1.
+- [x] `src/sine_denoising/shared/config.py` (pydantic configs).
+- [x] `src/sine_denoising/shared/seeding.py` (`set_seed`).
+- [x] `src/sine_denoising/shared/types.py` (split-array record types).
+- [x] `config/dataset.yaml`, `config/training.yaml`.
+- [x] `tests/unit/shared/test_config.py`.
+- [x] `tests/unit/shared/test_seeding.py`.
+- [x] `tests/unit/shared/test_types.py`.
+- [x] Commit Phase 1.
 
 ## Phase 2 — Dataset generation and loading
 - [ ] `src/sine_denoising/services/signal.py` (`make_signal`).
