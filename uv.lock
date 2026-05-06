@@ -1580,7 +1580,7 @@ wheels = [
 [[package]]
 name = "sine-frequency-denoising-rnn-lstm"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },

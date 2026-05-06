@@ -103,27 +103,26 @@ def test_manifest_contents(tmp_path: Path, small_cfg: DatasetConfig) -> None:
     assert total_real == expected_total
 
 
-def test_stratification_within_one(
-    tmp_path: Path, small_cfg: DatasetConfig
-) -> None:
-    splits = build_dataset(small_cfg, output_dir=tmp_path)
-    n = small_cfg.n_realisations
-    expected_train = int(round(small_cfg.train_ratio * n))
-    expected_val = int(round(small_cfg.val_ratio * n))
-    expected_test = n - expected_train - expected_val
-    cases = [
-        (splits.train, expected_train),
-        (splits.val, expected_val),
-        (splits.test, expected_test),
-    ]
-    for f_idx in range(len(small_cfg.frequencies)):
-        for sig in small_cfg.sigmas:
-            for split, expected in cases:
-                mask = (split.freq_idx == f_idx) & (
+def test_split_counts_for_n25_ratios_70_15_15(tmp_path: Path) -> None:
+    cfg = DatasetConfig(
+        frequencies=[1.0, 2.0],
+        sigmas=[0.1, 0.2],
+        fs=20.0,
+        duration=1.0,
+        window_size=10,
+        n_realisations=25,
+        seed=0,
+    )
+    splits = build_dataset(cfg, output_dir=tmp_path)
+    for f_idx in range(len(cfg.frequencies)):
+        for sig in cfg.sigmas:
+            counts = []
+            for split in (splits.train, splits.val, splits.test):
+                m = (split.freq_idx == f_idx) & (
                     split.sigma.flatten() == np.float32(sig)
                 )
-                rids = np.unique(split.realisation_id[mask])
-                assert abs(len(rids) - expected) <= 1
+                counts.append(len(np.unique(split.realisation_id[m])))
+            assert counts == [17, 4, 4]
 
 
 def test_uses_default_output_dir_when_none(

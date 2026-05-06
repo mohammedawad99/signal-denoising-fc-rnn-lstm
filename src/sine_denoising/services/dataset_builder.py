@@ -87,12 +87,15 @@ def _stratified_split(
         order = np.array(stratum_rids, dtype=np.int64)
         rng.shuffle(order)
         n = order.size
-        n_train = int(round(cfg.train_ratio * n))
-        n_val = int(round(cfg.val_ratio * n))
+        n_train = int(np.floor(cfg.train_ratio * n))
+        n_val = int(np.ceil(cfg.val_ratio * n))
         n_test = n - n_train - n_val
-        if n_test < 0:
-            n_val += n_test
-            n_test = 0
+        if n_test < 1:
+            if n_val > 1:
+                n_val -= 1
+            elif n_train > 1:
+                n_train -= 1
+            n_test = n - n_train - n_val
         for r in order[:n_train]:
             assignment[int(r)] = "train"
         for r in order[n_train:n_train + n_val]:
