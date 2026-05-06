@@ -7,3 +7,6 @@ window_size: 10
 n_realisations: 25
 seed: 42
 output_dir: data/generated
+train_ratio: 0.70
+val_ratio: 0.15
+test_ratio: 0.15

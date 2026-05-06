@@ -24,6 +24,9 @@ class DatasetConfig(BaseModel):
     n_realisations: int = Field(gt=0)
     seed: int = Field(ge=0)
     output_dir: str = "data/generated"
+    train_ratio: float = Field(default=0.70, gt=0, lt=1)
+    val_ratio: float = Field(default=0.15, gt=0, lt=1)
+    test_ratio: float = Field(default=0.15, gt=0, lt=1)
 
     @model_validator(mode="after")
     def _check_invariants(self) -> DatasetConfig:
@@ -42,6 +45,13 @@ class DatasetConfig(BaseModel):
         for s in self.sigmas:
             if s < 0:
                 raise ValueError(f"sigma must be non-negative; got {s}")
+        total = self.train_ratio + self.val_ratio + self.test_ratio
+        if abs(total - 1.0) > 1e-6:
+            raise ValueError(
+                f"split ratios must sum to 1; got {total} "
+                f"(train={self.train_ratio}, val={self.val_ratio}, "
+                f"test={self.test_ratio})."
+            )
         return self
 
     @classmethod

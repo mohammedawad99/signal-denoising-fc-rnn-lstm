@@ -20,6 +20,25 @@ def test_dataset_config_loads_from_yaml() -> None:
     assert cfg.window_size == 10
     assert cfg.n_realisations == 25
     assert cfg.seed == 42
+    assert cfg.train_ratio == 0.70
+    assert cfg.val_ratio == 0.15
+    assert cfg.test_ratio == 0.15
+
+
+def test_dataset_config_rejects_bad_ratio_sum() -> None:
+    with pytest.raises(ValidationError, match="split ratios"):
+        DatasetConfig(
+            frequencies=[1.0],
+            sigmas=[0.1],
+            fs=50.0,
+            duration=10.0,
+            window_size=10,
+            n_realisations=1,
+            seed=0,
+            train_ratio=0.5,
+            val_ratio=0.3,
+            test_ratio=0.3,
+        )
 
 
 def test_training_config_loads_from_yaml() -> None:

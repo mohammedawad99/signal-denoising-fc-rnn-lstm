@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from sine_denoising.shared.types import Splits, SplitArrays
+from sine_denoising.shared.types import SplitArrays, Splits
 
 
 def _make(n: int, k: int = 4, t: int = 10) -> SplitArrays:
