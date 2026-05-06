@@ -37,15 +37,16 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Commit Phase 2.
 
 ## Phase 3 — Models
-- [ ] `src/sine_denoising/models/base.py`.
-- [ ] `src/sine_denoising/models/fc.py`.
-- [ ] `src/sine_denoising/models/rnn.py`.
-- [ ] `src/sine_denoising/models/lstm.py`.
-- [ ] Update `src/sine_denoising/models/__init__.py` exports.
-- [ ] `tests/unit/models/test_fc.py` (shape + smoke).
-- [ ] `tests/unit/models/test_rnn.py`.
-- [ ] `tests/unit/models/test_lstm.py`.
-- [ ] Commit Phase 3.
+- [x] `src/sine_denoising/models/base.py`.
+- [x] `src/sine_denoising/models/fc.py`.
+- [x] `src/sine_denoising/models/rnn.py`.
+- [x] `src/sine_denoising/models/lstm.py`.
+- [x] Update `src/sine_denoising/models/__init__.py` exports.
+- [x] `tests/unit/models/test_fc.py` (shape + smoke).
+- [x] `tests/unit/models/test_rnn.py`.
+- [x] `tests/unit/models/test_lstm.py`.
+- [x] `tests/unit/models/test_model_common.py`.
+- [x] Commit Phase 3.
 
 ## Phase 4 — Training loop
 - [ ] `src/sine_denoising/training/loops.py`.
