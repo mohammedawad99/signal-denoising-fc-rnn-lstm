@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 packages = ["src/sine_denoising"]
 
 [project]
-name = "sine-frequency-denoising-rnn-lstm"
+name = "signal-denoising-fc-rnn-lstm"
 version = "0.1.0"
 description = "Deep learning project comparing Fully Connected, RNN, and LSTM models for noisy sine signal reconstruction."
 readme = "README.md"

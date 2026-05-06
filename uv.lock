@@ -1578,7 +1578,7 @@ wheels = [
 ]
 
 [[package]]
-name = "sine-frequency-denoising-rnn-lstm"
+name = "signal-denoising-fc-rnn-lstm"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
