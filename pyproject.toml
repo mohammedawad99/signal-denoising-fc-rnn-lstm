@@ -1,7 +1,7 @@
 [project]
 name = "sine-frequency-denoising-rnn-lstm"
 version = "0.1.0"
-description = "Add your description here"
+description = "Deep learning project comparing Fully Connected, RNN, and LSTM models for noisy sine signal reconstruction."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -21,3 +21,32 @@ dev = [
     "pytest-cov>=7.1.0",
     "ruff>=0.15.12",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q --cov=src --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "src/**/__init__.py",
+]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+mypy_path = "src"
