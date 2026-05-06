@@ -1,0 +1,12 @@
+# Training hyperparameters — see docs/PRD_models.md.
+# `model` is overridden by the CLI when training each architecture in turn.
+model: fc
+batch_size: 64
+learning_rate: 0.001
+epochs: 30
+early_stopping_patience: 5
+grad_clip_norm: 1.0
+hidden_size: 32
+seed: 42
+device: cpu
+results_dir: results
