@@ -97,8 +97,8 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Rebuild `data/generated/dataset.npz`.
 - [x] Retrain FC, RNN, LSTM on the rebuilt dataset.
 - [x] Re-run `sdk.evaluate` to refresh `results/summary.json`.
-- [ ] Regenerate the reconstruction figure and refresh `assets/report/reconstruction_example.png`.
-- [ ] Update `README.md` with the final mixture-extraction results.
+- [x] Regenerate the reconstruction figure and refresh `assets/report/reconstruction_example.png`.
+- [x] Update `README.md` with the final mixture-extraction results.
 - [ ] Run the full quality gate (`ruff check .`, `mypy src`, `pytest -q`, file-size check).
 - [ ] Commit and push Phase 8.
 
