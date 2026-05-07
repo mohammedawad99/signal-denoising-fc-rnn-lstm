@@ -113,8 +113,8 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Rebuild dataset with fs=1000.
 - [x] Retrain FC, RNN, LSTM.
 - [x] Re-run evaluation.
-- [ ] Regenerate report figures.
-- [ ] Update README with final fs=1000 results and analysis.
+- [x] Regenerate report figures.
+- [x] Update README with final fs=1000 results and analysis.
 - [ ] Run full quality gate.
 - [ ] Commit and push Phase 10.
 
