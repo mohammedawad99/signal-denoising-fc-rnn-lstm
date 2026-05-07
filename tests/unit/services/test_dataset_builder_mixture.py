@@ -36,8 +36,8 @@ def test_window_idx_values_are_within_realisation(tmp_path: Path) -> None:
     cfg = DatasetConfig(
         frequencies=[1.0, 2.0],
         sigmas=[0.1, 0.2],
-        fs=20.0,
-        duration=1.0,
+        fs=1000.0,
+        duration=0.04,
         window_size=10,
         n_realisations=10,
         seed=0,
@@ -54,8 +54,8 @@ def test_each_group_has_K_records_with_distinct_queries(tmp_path: Path) -> None:
     cfg = DatasetConfig(
         frequencies=[1.0, 2.0, 5.0, 10.0],
         sigmas=[0.1],
-        fs=50.0,
-        duration=1.0,
+        fs=1000.0,
+        duration=0.04,
         window_size=10,
         n_realisations=4,
         seed=0,
@@ -85,8 +85,8 @@ def test_query_group_shares_x_noisy_and_sigma(tmp_path: Path) -> None:
     cfg = DatasetConfig(
         frequencies=[1.0, 2.0, 5.0, 10.0],
         sigmas=[0.1],
-        fs=50.0,
-        duration=1.0,
+        fs=1000.0,
+        duration=0.04,
         window_size=10,
         n_realisations=4,
         seed=0,
@@ -113,8 +113,8 @@ def test_sigma_zero_x_noisy_equals_sum_of_clean_components(
     cfg = DatasetConfig(
         frequencies=[1.0, 2.0, 5.0, 10.0],
         sigmas=[0.0],
-        fs=50.0,
-        duration=1.0,
+        fs=1000.0,
+        duration=0.04,
         window_size=10,
         n_realisations=4,
         seed=0,

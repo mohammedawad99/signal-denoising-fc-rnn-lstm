@@ -17,8 +17,8 @@ def small_cfg() -> DatasetConfig:
     return DatasetConfig(
         frequencies=[1.0, 2.0],
         sigmas=[0.1, 0.2],
-        fs=20.0,
-        duration=1.0,
+        fs=1000.0,
+        duration=0.04,
         window_size=10,
         n_realisations=20,
         seed=0,

@@ -16,7 +16,7 @@ def test_dataset_config_loads_from_yaml() -> None:
     cfg = DatasetConfig.from_yaml(REPO_ROOT / "config" / "dataset.yaml")
     assert cfg.frequencies == [1.0, 2.0, 5.0, 10.0]
     assert cfg.sigmas == [0.05, 0.10, 0.20, 0.30]
-    assert cfg.fs == 50.0
+    assert cfg.fs == 1000.0
     assert cfg.window_size == 10
     assert cfg.n_realisations == 25
     assert cfg.seed == 42
@@ -30,7 +30,7 @@ def test_dataset_config_rejects_bad_ratio_sum() -> None:
         DatasetConfig(
             frequencies=[1.0],
             sigmas=[0.1],
-            fs=50.0,
+            fs=1000.0,
             duration=10.0,
             window_size=10,
             n_realisations=1,
@@ -69,9 +69,9 @@ def test_dataset_config_rejects_indivisible_window(tmp_path: Path) -> None:
     bad = {
         "frequencies": [1.0],
         "sigmas": [0.1],
-        "fs": 50.0,
+        "fs": 1000.0,
         "duration": 10.0,
-        "window_size": 7,  # 500 % 7 != 0
+        "window_size": 7,  # 10000 % 7 != 0
         "n_realisations": 1,
         "seed": 0,
     }
@@ -86,7 +86,7 @@ def test_dataset_config_rejects_negative_sigma() -> None:
         DatasetConfig(
             frequencies=[1.0, 2.0],
             sigmas=[0.1, -0.05],
-            fs=50.0,
+            fs=1000.0,
             duration=10.0,
             window_size=10,
             n_realisations=1,

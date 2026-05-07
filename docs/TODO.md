@@ -107,6 +107,17 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Add README dataset-correctness checks explaining shared `x_noisy`, query-specific `y_clean`, split-by-realisation, and the `sigma = 0` invariant test.
 - [x] Run the full quality gate after README enrichment.
 
+## Phase 10 — Align sampling with 10,000-sample signal setup
+- [x] Update docs/config to use fs=1000 and 10,000 samples per realisation.
+- [x] Update dataset count and stratification tests for 400,000 records.
+- [ ] Rebuild dataset with fs=1000.
+- [ ] Retrain FC, RNN, LSTM.
+- [ ] Re-run evaluation.
+- [ ] Regenerate report figures.
+- [ ] Update README with final fs=1000 results and analysis.
+- [ ] Run full quality gate.
+- [ ] Commit and push Phase 10.
+
 ## Cross-cutting reminders
 - After every phase: `git status`, `git diff`, then a focused commit. No omnibus WIP commits.
 - If any assumption from the PRDs changes, edit the PRD *first*, then the code.

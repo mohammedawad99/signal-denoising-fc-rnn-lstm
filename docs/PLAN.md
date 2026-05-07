@@ -123,6 +123,19 @@ Steps:
 - **Quality gate.** `ruff check .`, `mypy src`, `pytest -q`, file-size sanity.
 - **Push.** Commit each step as it lands and push the final state of `main`.
 
+## Phase 10 — Align sampling with 10,000-sample signal setup
+Outcome: dataset, training, evaluation, and report all reflect `fs = 1000 Hz`, so each realisation contains 10,000 samples (1,000 non-overlapping windows of length 10 each). The mixture-extraction task structure and the four chosen frequencies are unchanged.
+
+Steps:
+- **Docs/config (10A).** Update `docs/PRD.md`, `docs/PRD_dataset.md`, `docs/PLAN.md`, `docs/TODO.md`, and `config/dataset.yaml` to the new sampling rate; commit.
+- **Tests.** Update `tests/unit/services/test_dataset_builder_counts.py` (and any other affected test) to assert the new 272,000 / 64,000 / 64,000 split totals.
+- **Regenerate data.** Rebuild `data/generated/dataset.npz` from the updated config.
+- **Retrain.** Run the existing CLIs to refresh `results/checkpoints/*.pt` (no model-code change needed since the per-window interface is unchanged).
+- **Re-evaluate.** Run `uv run python -m sine_denoising.sdk.evaluate` to refresh `results/summary.json` and `assets/generated/reconstruction_example.png`; copy the figure into `assets/report/`.
+- **Update README.** Refresh the dataset-spec subsections (the new `fs`, the new totals, the new cycles-per-window numbers) and the results tables and discussion.
+- **Quality gate.** `ruff check .`, `mypy src`, `pytest -q`, file-size sanity.
+- **Push.** Commit each step as it lands and push the final state of `main`.
+
 ## Cross-cutting rules
 - One responsibility per file. If a file approaches 150 lines, split it.
 - Tests live under `tests/unit/` mirroring the source tree; integration-style tests (full small training loop) live under `tests/integration/`.

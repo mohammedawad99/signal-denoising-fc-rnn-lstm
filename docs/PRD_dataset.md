@@ -23,9 +23,9 @@ with:
 The model's input is a window of `mixture_r`. The training target is the corresponding window of `clean_{r, q}`, where `q` is the query frequency index encoded in `C = one_hot(q, 4)`.
 
 ### 2.2 Sampling
-- Sampling rate `fs = 50 Hz`. Nyquist for the highest frequency `f_max = 10 Hz` requires `fs > 20 Hz`; we pick `fs = 50 Hz` for a 5× oversampling margin.
-- Signal duration `T_total = 10 s`, giving `N_samples = T_total * fs = 500` discrete samples per realisation.
-- Time vector: `t_n = n / fs` for `n = 0, …, 499`.
+- Sampling rate `fs = 1000 Hz`. Nyquist for the highest frequency `f_max = 10 Hz` requires `fs > 20 Hz`; `fs = 1000 Hz` creates `fs × T_total = 10,000` samples per realisation.
+- Signal duration `T_total = 10 s`, giving `N_samples = T_total * fs = 10,000` discrete samples per realisation.
+- Time vector: `t_n = n / fs` for `n = 0, …, 9999`.
 
 ### 2.3 Noise model
 Each component carries its own independent Gaussian noise trace `eps_{r,k}` of standard deviation `sigma * A`. Because the four noise traces are independent and additive, the noise component of `mixture_r` has standard deviation `2 * sigma * A` (variance `4 * (sigma * A)^2`). The four sigma values are `{0.05, 0.10, 0.20, 0.30}` (PRD §A5).
@@ -39,11 +39,11 @@ Per realisation we keep both the mixture and the four clean components in memory
 ## 3. Windowing
 
 ### 3.1 Slicing
-Each mixture (and each of its four clean components) is sliced into non-overlapping windows of length `T = 10`. That gives `500 / 10 = 50` mixture-windows per realisation. From every mixture-window we then emit `K = 4` training records — one per query frequency.
+Each mixture (and each of its four clean components) is sliced into non-overlapping windows of length `T = 10`. That gives `10,000 / 10 = 1000` mixture-windows per realisation. From every mixture-window we then emit `K = 4` dataset records — one per query frequency. The window length in time is `T / fs = 10 / 1000 = 0.01 s`, so each context window contains only a small fraction of a cycle of every component (1 Hz: 0.01 cycles; 2 Hz: 0.02; 5 Hz: 0.05; 10 Hz: 0.10).
 
 Total examples in the dataset:
 ```
-4 sigmas × 25 realisations × 50 windows × 4 queries = 20,000 examples
+4 sigmas × 25 realisations × 1000 windows × 4 queries = 400,000 examples
 ```
 
 ### 3.2 Per-window record
@@ -77,11 +77,11 @@ Stratified split by `sigma` at the **realisation** level — never at the window
 
 Per stratum the split is computed by floor on train and ceil on val with the rest going to test, which yields exactly `17 / 4 / 4` realisations for `n = 25` and `0.70 / 0.15 / 0.15` ratios.
 
-### 4.2 Approximate counts
+### 4.2 Production counts
 Per `sigma` stratum: 17 train / 4 val / 4 test mixtures. Across the 4 sigmas:
-- Train: 4 × 17 × 50 windows × 4 queries = 13,600 examples
-- Val:   4 × 4  × 50 windows × 4 queries = 3,200 examples
-- Test:  4 × 4  × 50 windows × 4 queries = 3,200 examples
+- Train: 4 × 17 × 1000 windows × 4 queries = 272,000 examples
+- Val:   4 × 4  × 1000 windows × 4 queries = 64,000 examples
+- Test:  4 × 4  × 1000 windows × 4 queries = 64,000 examples
 
 ### 4.3 Reproducibility
 A single random seed (default `seed = 42`) controls (i) phase draws, (ii) noise draws, and (iii) the train/val/test split. The seed lives in `config/dataset.yaml` (or equivalent) and is logged in run metadata.

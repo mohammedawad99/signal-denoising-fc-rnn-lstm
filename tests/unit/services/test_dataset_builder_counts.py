@@ -34,21 +34,21 @@ def production_splits(
 
 
 def test_production_dataset_total_counts(production_splits: Splits) -> None:
-    assert len(production_splits.train) == 13_600
-    assert len(production_splits.val) == 3_200
-    assert len(production_splits.test) == 3_200
+    assert len(production_splits.train) == 272_000
+    assert len(production_splits.val) == 64_000
+    assert len(production_splits.test) == 64_000
     total = (
         len(production_splits.train)
         + len(production_splits.val)
         + len(production_splits.test)
     )
-    assert total == 20_000
+    assert total == 400_000
 
 
 def test_production_per_sigma_counts(
     production_cfg: DatasetConfig, production_splits: Splits,
 ) -> None:
-    expected = {"train": 3_400, "val": 800, "test": 800}
+    expected = {"train": 68_000, "val": 16_000, "test": 16_000}
     cases = [
         ("train", production_splits.train),
         ("val", production_splits.val),
