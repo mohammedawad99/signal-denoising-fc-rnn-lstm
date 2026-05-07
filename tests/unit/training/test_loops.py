@@ -24,6 +24,7 @@ def _make_loader(
         y_clean=rng.normal(size=(n, T)).astype(np.float32),
         freq_idx=np.zeros(n, dtype=np.int8),
         realisation_id=np.arange(n, dtype=np.int32),
+        window_idx=np.zeros(n, dtype=np.int16),
     )
     return DataLoader(WindowDataset(split), batch_size=batch_size, shuffle=False)
 

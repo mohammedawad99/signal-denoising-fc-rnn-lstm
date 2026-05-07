@@ -14,6 +14,7 @@ def _make(n: int, k: int = 4, t: int = 10) -> SplitArrays:
         y_clean=np.zeros((n, t), dtype=np.float32),
         freq_idx=np.zeros((n,), dtype=np.int8),
         realisation_id=np.zeros((n,), dtype=np.int32),
+        window_idx=np.zeros((n,), dtype=np.int16),
     )
 
 

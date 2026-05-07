@@ -7,8 +7,8 @@ from typing import Any
 
 import numpy as np
 
-from sine_denoising.services.encoding import non_overlapping_windows, one_hot
-from sine_denoising.services.signal import make_signal
+from sine_denoising.services.encoding import one_hot
+from sine_denoising.services.mixtures import make_mixture_realisation
 from sine_denoising.shared.config import DatasetConfig
 from sine_denoising.shared.types import SplitArrays, Splits
 
@@ -41,47 +41,45 @@ def build_dataset(
 
 def _generate_records(
     cfg: DatasetConfig, rng: np.random.Generator,
-) -> tuple[dict[str, np.ndarray], list[tuple[int, int, int]]]:
+) -> tuple[dict[str, np.ndarray], list[tuple[int, int]]]:
     K = len(cfg.frequencies)
     chunks: dict[str, list[np.ndarray]] = {
         "C": [], "sigma": [], "x_noisy": [], "y_clean": [],
-        "freq_idx": [], "realisation_id": [],
+        "freq_idx": [], "realisation_id": [], "window_idx": [],
     }
-    real_meta: list[tuple[int, int, int]] = []
+    real_meta: list[tuple[int, int]] = []
     rid = 0
-    for f_idx, freq in enumerate(cfg.frequencies):
-        for s_idx, sigma in enumerate(cfg.sigmas):
-            for _ in range(cfg.n_realisations):
-                phase = float(rng.uniform(0.0, 2.0 * np.pi))
-                clean, noisy = make_signal(
-                    frequency=freq, sigma=sigma, fs=cfg.fs,
-                    duration=cfg.duration, phase=phase, rng=rng,
-                )
-                xw = non_overlapping_windows(noisy, cfg.window_size)
-                yw = non_overlapping_windows(clean, cfg.window_size)
-                n = xw.shape[0]
-                chunks["x_noisy"].append(xw.astype(np.float32))
-                chunks["y_clean"].append(yw.astype(np.float32))
+    for s_idx, sigma in enumerate(cfg.sigmas):
+        for _ in range(cfg.n_realisations):
+            mixture_w, clean_w = make_mixture_realisation(
+                cfg.frequencies, sigma, cfg.fs, cfg.duration,
+                cfg.window_size, rng,
+            )
+            num_w = mixture_w.shape[0]
+            for q in range(K):
+                chunks["x_noisy"].append(mixture_w)
+                chunks["y_clean"].append(clean_w[q])
                 chunks["C"].append(
-                    np.broadcast_to(one_hot(f_idx, K), (n, K)).astype(np.float32)
+                    np.broadcast_to(one_hot(q, K), (num_w, K)).astype(np.float32)
                 )
-                chunks["sigma"].append(np.full((n, 1), sigma, dtype=np.float32))
-                chunks["freq_idx"].append(np.full((n,), f_idx, dtype=np.int8))
-                chunks["realisation_id"].append(np.full((n,), rid, dtype=np.int32))
-                real_meta.append((rid, f_idx, s_idx))
-                rid += 1
+                chunks["sigma"].append(np.full((num_w, 1), sigma, dtype=np.float32))
+                chunks["freq_idx"].append(np.full((num_w,), q, dtype=np.int8))
+                chunks["realisation_id"].append(np.full((num_w,), rid, dtype=np.int32))
+                chunks["window_idx"].append(np.arange(num_w, dtype=np.int16))
+            real_meta.append((rid, s_idx))
+            rid += 1
     arrays = {k: np.concatenate(v, axis=0) for k, v in chunks.items()}
     return arrays, real_meta
 
 
 def _stratified_split(
-    real_meta: list[tuple[int, int, int]],
+    real_meta: list[tuple[int, int]],
     cfg: DatasetConfig,
     rng: np.random.Generator,
 ) -> dict[int, str]:
-    by_stratum: dict[tuple[int, int], list[int]] = {}
-    for rid, f_idx, s_idx in real_meta:
-        by_stratum.setdefault((f_idx, s_idx), []).append(rid)
+    by_stratum: dict[int, list[int]] = {}
+    for rid, s_idx in real_meta:
+        by_stratum.setdefault(s_idx, []).append(rid)
     assignment: dict[int, str] = {}
     for stratum_rids in by_stratum.values():
         order = np.array(stratum_rids, dtype=np.int64)
@@ -116,6 +114,7 @@ def _to_splits(arrays: dict[str, np.ndarray], split_arr: np.ndarray) -> Splits:
             y_clean=arrays["y_clean"][mask],
             freq_idx=arrays["freq_idx"][mask],
             realisation_id=arrays["realisation_id"][mask],
+            window_idx=arrays["window_idx"][mask],
         )
     return Splits(train=out["train"], val=out["val"], test=out["test"])
 
@@ -143,6 +142,6 @@ def _write_manifest(
             "val": len(splits.val),
             "test": len(splits.test),
         },
-        "dataset_version": "v1",
+        "dataset_version": "v2-mixture",
     }
     path.write_text(json.dumps(manifest, indent=2))

@@ -39,6 +39,9 @@ def test_load_dataset_round_trip(
     np.testing.assert_array_equal(
         in_memory.train.realisation_id, on_disk.train.realisation_id
     )
+    np.testing.assert_array_equal(
+        in_memory.train.window_idx, on_disk.train.window_idx
+    )
 
 
 def test_load_dataset_shapes(
@@ -53,6 +56,7 @@ def test_load_dataset_shapes(
     assert splits.train.y_clean.shape == (n, T)
     assert splits.train.C.shape == (n, K)
     assert splits.train.sigma.shape == (n, 1)
+    assert splits.train.window_idx.shape == (n,)
 
 
 def test_window_dataset_len_matches_split(

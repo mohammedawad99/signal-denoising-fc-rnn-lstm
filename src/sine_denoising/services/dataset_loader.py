@@ -26,6 +26,7 @@ def load_dataset(path: str | Path) -> Splits:
             y_clean=data["y_clean"][mask],
             freq_idx=data["freq_idx"][mask],
             realisation_id=data["realisation_id"][mask],
+            window_idx=data["window_idx"][mask],
         )
     return Splits(train=out["train"], val=out["val"], test=out["test"])
 

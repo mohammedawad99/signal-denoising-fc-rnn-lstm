@@ -44,6 +44,7 @@ def test_build_dataset_shapes(tmp_path: Path, small_cfg: DatasetConfig) -> None:
         assert s.sigma.shape == (n, 1)
         assert s.freq_idx.shape == (n,)
         assert s.realisation_id.shape == (n,)
+        assert s.window_idx.shape == (n,)
 
 
 def test_splits_disjoint_by_realisation_id(
@@ -95,11 +96,7 @@ def test_manifest_contents(tmp_path: Path, small_cfg: DatasetConfig) -> None:
     assert manifest["examples_per_split"]["val"] == len(splits.val)
     assert manifest["examples_per_split"]["test"] == len(splits.test)
     total_real = sum(manifest["realisations_per_split"].values())
-    expected_total = (
-        len(small_cfg.frequencies)
-        * len(small_cfg.sigmas)
-        * small_cfg.n_realisations
-    )
+    expected_total = len(small_cfg.sigmas) * small_cfg.n_realisations
     assert total_real == expected_total
 
 
