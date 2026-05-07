@@ -96,7 +96,7 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Add mixture-invariant tests for shared `x_noisy`, query-specific `y_clean`, sigma-zero mixture equality, production counts, and per-sigma stratification.
 - [x] Rebuild `data/generated/dataset.npz`.
 - [x] Retrain FC, RNN, LSTM on the rebuilt dataset.
-- [ ] Re-run `sdk.evaluate` to refresh `results/summary.json`.
+- [x] Re-run `sdk.evaluate` to refresh `results/summary.json`.
 - [ ] Regenerate the reconstruction figure and refresh `assets/report/reconstruction_example.png`.
 - [ ] Update `README.md` with the final mixture-extraction results.
 - [ ] Run the full quality gate (`ruff check .`, `mypy src`, `pytest -q`, file-size check).
