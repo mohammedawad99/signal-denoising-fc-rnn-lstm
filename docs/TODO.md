@@ -71,14 +71,14 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Commit Phase 5.
 
 ## Phase 6 — Lab report
-- [ ] Fill in README "Experimental setup" with concrete config values.
-- [ ] Fill in "Results" table with real numbers from `summary.json`.
+- [x] Fill in README "Experimental setup" with concrete config values.
+- [x] Fill in "Results" table with real numbers from `summary.json`.
 - [ ] Embed loss-curve figure(s).
-- [ ] Embed reconstruction figures.
-- [ ] Write "Discussion" grounded in the actual numbers (no boilerplate).
-- [ ] Write "Conclusion" + "Limitations" + "Future work".
-- [ ] Add link to the GitHub repository.
-- [ ] Commit Phase 6.
+- [x] Embed reconstruction figures.
+- [x] Write "Discussion" grounded in the actual numbers (no boilerplate).
+- [x] Write "Conclusion" + "Limitations" + "Future work".
+- [x] Add link to the GitHub repository.
+- [x] Commit Phase 6.
 
 ## Phase 7 — Quality gate and packaging
 - [ ] `uv sync` runs clean.
