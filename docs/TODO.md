@@ -110,7 +110,7 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 ## Phase 10 — Align sampling with 10,000-sample signal setup
 - [x] Update docs/config to use fs=1000 and 10,000 samples per realisation.
 - [x] Update dataset count and stratification tests for 400,000 records.
-- [ ] Rebuild dataset with fs=1000.
+- [x] Rebuild dataset with fs=1000.
 - [ ] Retrain FC, RNN, LSTM.
 - [ ] Re-run evaluation.
 - [ ] Regenerate report figures.
