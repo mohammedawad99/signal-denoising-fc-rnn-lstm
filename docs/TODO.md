@@ -101,6 +101,12 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Run the full quality gate (`ruff check .`, `mypy src`, `pytest -q`, file-size check).
 - [x] Commit and push Phase 8.
 
+## Phase 9 — README enrichment and final polish
+- [x] Add `assets/report/mixture_query_example.png` to visualize the same noisy mixture window with four query-specific clean targets.
+- [x] Add README explanation for the `(realisation_id, window_idx)` mixture-query structure.
+- [x] Add README dataset-correctness checks explaining shared `x_noisy`, query-specific `y_clean`, split-by-realisation, and the `sigma = 0` invariant test.
+- [x] Run the full quality gate after README enrichment.
+
 ## Cross-cutting reminders
 - After every phase: `git status`, `git diff`, then a focused commit. No omnibus WIP commits.
 - If any assumption from the PRDs changes, edit the PRD *first*, then the code.
