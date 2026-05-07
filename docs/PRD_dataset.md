@@ -1,23 +1,26 @@
 # PRD — Dataset
 
 ## 1. Purpose
-Specify how the synthetic noisy/clean sine-signal dataset for HW1 is produced, encoded, split, and stored. This is the contract between the data-generation code in `src/sine_denoising/services/` and the model training code in `src/sine_denoising/training/`.
+Specify how the synthetic noisy-mixture dataset for HW1 is produced, encoded, split, and stored. This is the contract between the data-generation code in `src/sine_denoising/services/` and the model training code in `src/sine_denoising/training/`. Each training example pairs a window of a noisy mixture with the clean window of the single frequency component selected by a one-hot query `C`.
 
 ## 2. Signal generation
 
-### 2.1 Continuous signal
-A clean signal at frequency `f_k` is defined as
+### 2.1 Components and mixture
+For realisation `r` and frequency component `k ∈ {0, 1, 2, 3}` (corresponding to `f_k ∈ {1, 2, 5, 10}` Hz):
 
 ```
-s_k(t) = A * sin(2 * pi * f_k * t + phi)
+clean_{r,k}(t) = A * sin(2 * pi * f_k * t + phi_{r,k})
+noisy_{r,k}(t) = clean_{r,k}(t) + sigma * A * eps_{r,k}(t)
+mixture_r(t)   = sum_{k=0}^{3} noisy_{r,k}(t)
 ```
 
 with:
-- `A = 1.0` (amplitude, fixed; see PRD §A2),
-- `f_k ∈ {1, 2, 5, 10}` Hz (the four chosen frequencies; see PRD §A1),
-- `phi ~ Uniform[0, 2*pi)` (random initial phase, drawn once per *realisation*).
+- `A = 1.0` (amplitude, fixed; see PRD §A2).
+- `phi_{r,k} ~ Uniform[0, 2*pi)` drawn once per realisation per frequency (PRD §A6).
+- `eps_{r,k}(t) ~ N(0, 1)` drawn independently per realisation, per frequency, per sample.
+- `sigma` taken from the four levels in §A5.
 
-The random phase covers the cosine case (`cos = sin(· + π/2)`) so we treat sine as the canonical family.
+The model's input is a window of `mixture_r`. The training target is the corresponding window of `clean_{r, q}`, where `q` is the query frequency index encoded in `C = one_hot(q, 4)`.
 
 ### 2.2 Sampling
 - Sampling rate `fs = 50 Hz`. Nyquist for the highest frequency `f_max = 10 Hz` requires `fs > 20 Hz`; we pick `fs = 50 Hz` for a 5× oversampling margin.
@@ -25,65 +28,60 @@ The random phase covers the cosine case (`cos = sin(· + π/2)`) so we treat sin
 - Time vector: `t_n = n / fs` for `n = 0, …, 499`.
 
 ### 2.3 Noise model
-Additive Gaussian white noise with standard deviation `sigma * A`:
+Each component carries its own independent Gaussian noise trace `eps_{r,k}` of standard deviation `sigma * A`. Because the four noise traces are independent and additive, the noise component of `mixture_r` has standard deviation `2 * sigma * A` (variance `4 * (sigma * A)^2`). The four sigma values are `{0.05, 0.10, 0.20, 0.30}` (PRD §A5).
 
-```
-x_noisy[n] = s_k(t_n) + sigma * A * eps[n],   eps[n] ~ N(0, 1)
-```
+### 2.4 Realisations per sigma
+- `N_realisations = 25` independent mixtures per `sigma`.
+- Total mixtures: `4 sigmas × 25 = 100`, each of length `N_samples = 500`.
 
-The four sigma values are `{0.05, 0.10, 0.20, 0.30}` (PRD §A5). For each `(f_k, sigma)` pair we draw a fresh noise realisation per signal.
-
-### 2.4 Realisations per (frequency, sigma)
-- `N_realisations = 25` independent signals per `(frequency, sigma)` pair.
-- Total realisations: `4 frequencies × 4 sigmas × 25 = 400` signals × `500` samples each.
-
-This is large enough to train small networks comfortably without making generation or training slow on CPU.
+Per realisation we keep both the mixture and the four clean components in memory long enough to emit one training record per `(window, query_frequency)` pair (see §3.2).
 
 ## 3. Windowing
 
 ### 3.1 Slicing
-Each realisation of length `N_samples = 500` is sliced into non-overlapping windows of length `T = 10`. That gives `500 / 10 = 50` windows per realisation.
+Each mixture (and each of its four clean components) is sliced into non-overlapping windows of length `T = 10`. That gives `500 / 10 = 50` mixture-windows per realisation. From every mixture-window we then emit `K = 4` training records — one per query frequency.
 
-Total windows in the dataset:
+Total examples in the dataset:
 ```
-4 freq × 4 sigma × 25 realisations × 50 windows = 20,000 examples
+4 sigmas × 25 realisations × 50 windows × 4 queries = 20,000 examples
 ```
 
 ### 3.2 Per-window record
 Each example stored is a single record:
 
-| field          | shape   | dtype    | meaning                                            |
-|----------------|---------|----------|----------------------------------------------------|
-| `C`            | `(4,)`  | float32  | one-hot encoding of the frequency                  |
-| `sigma`        | `(1,)`  | float32  | noise level for this realisation (in `[0,1]`)      |
-| `x_noisy`      | `(10,)` | float32  | noisy samples for this window                      |
-| `y_clean`      | `(10,)` | float32  | clean samples for this window (target)             |
-| `freq_idx`     | scalar  | int8     | index of the frequency (for stratification only)   |
-| `realisation_id` | scalar | int32   | global id of the realisation (for split control)   |
+| field          | shape   | dtype    | meaning                                                          |
+|----------------|---------|----------|------------------------------------------------------------------|
+| `C`            | `(4,)`  | float32  | one-hot **query** vector — which component to reconstruct        |
+| `sigma`        | `(1,)`  | float32  | noise level used per component in this realisation (in `[0,1]`)  |
+| `x_noisy`      | `(10,)` | float32  | window of the noisy **mixture**                                  |
+| `y_clean`      | `(10,)` | float32  | window of the clean component selected by `C` (target)           |
+| `freq_idx`     | scalar  | int8     | query frequency index (= `argmax C`); for analysis only          |
+| `realisation_id` | scalar | int32   | global mixture id (for split control)                            |
+| `window_idx`   | scalar  | int16    | index of the non-overlapping window inside the mixture realisation |
 
-`freq_idx` and `realisation_id` are bookkeeping fields, not model inputs.
+`freq_idx`, `realisation_id`, and `window_idx` are bookkeeping fields, not model inputs. All four query records from the same `(realisation_id, window_idx)` share the same `x_noisy` and the same `sigma`, but have different `C` and different `y_clean`.
 
 ### 3.3 Decision: non-overlapping windows
 The assignment does not specify stride. We choose non-overlapping (stride 10) over sliding (stride 1) for two reasons:
 1. Adjacent windows generated by stride 1 share 90% of their samples, which inflates dataset size with near-duplicates and lets the network memorise rather than generalise.
-2. Non-overlapping windows are cleaner for the realisation-level train/val/test split (no accidental temporal leakage even within a realisation).
+2. Non-overlapping windows are cleaner for the realisation-level train/val/test split (no accidental temporal leakage even within a mixture).
 
 ## 4. Splits
 
 ### 4.1 Strategy
-Stratified split by `(freq_idx, sigma)` at the **realisation** level — never at the window level — to prevent leakage.
+Stratified split by `sigma` at the **realisation** level — never at the window level and never at the query level — to prevent leakage. All four query records from a given mixture-window inherit the same `realisation_id` and end up in the same split.
 
 - Train: 70% of realisations per stratum (≈ 17 of 25 per stratum).
 - Validation: 15% (≈ 4 of 25).
 - Test: 15% (≈ 4 of 25).
 
-All windows from a given realisation stay together in the same split.
+Per stratum the split is computed by floor on train and ceil on val with the rest going to test, which yields exactly `17 / 4 / 4` realisations for `n = 25` and `0.70 / 0.15 / 0.15` ratios.
 
 ### 4.2 Approximate counts
-Per stratum: 17 train / 4 val / 4 test realisations. Total across the 16 strata:
-- Train: ≈ 272 realisations × 50 windows ≈ 13,600 examples
-- Val: ≈ 64 realisations × 50 windows ≈ 3,200 examples
-- Test: ≈ 64 realisations × 50 windows ≈ 3,200 examples
+Per `sigma` stratum: 17 train / 4 val / 4 test mixtures. Across the 4 sigmas:
+- Train: 4 × 17 × 50 windows × 4 queries = 13,600 examples
+- Val:   4 × 4  × 50 windows × 4 queries = 3,200 examples
+- Test:  4 × 4  × 50 windows × 4 queries = 3,200 examples
 
 ### 4.3 Reproducibility
 A single random seed (default `seed = 42`) controls (i) phase draws, (ii) noise draws, and (iii) the train/val/test split. The seed lives in `config/dataset.yaml` (or equivalent) and is logged in run metadata.
@@ -103,11 +101,11 @@ The manifest includes a `dataset_version` string. Any change to frequencies, sig
 ## 6. Encoding utilities (interface, not implementation)
 
 The dataset module is expected to expose at least:
-- `make_signal(freq, sigma, fs, duration, phase, rng) -> (clean, noisy)`
+- `make_signal(freq, sigma, fs, duration, phase, rng) -> (clean, noisy)` — used as a building block to draw one (clean, noisy) component pair before they are summed into the mixture.
 - `one_hot(freq_idx, num_classes) -> np.ndarray`
-- `window(signal, T, stride) -> np.ndarray` — returns shape `(num_windows, T)`
-- `build_dataset(config) -> dict` — orchestrator that returns the full split-tagged record arrays
-- `load_dataset(path) -> SplitArrays` — strongly-typed loader for training code
+- `non_overlapping_windows(signal, T) -> np.ndarray` — returns shape `(num_windows, T)`
+- `build_dataset(config) -> Splits` — orchestrator that builds each mixture, slices it, emits one record per `(window_idx, query_freq)` pair, applies the realisation-level split, and persists `dataset.npz` + `manifest.json`.
+- `load_dataset(path) -> Splits` — strongly-typed loader for training code.
 
 Exact module layout is defined in `PLAN.md`.
 
@@ -115,9 +113,10 @@ Exact module layout is defined in `PLAN.md`.
 - Every `C` is exactly one-hot (sum to 1, all entries in `{0, 1}`).
 - Every `sigma` is in `{0.05, 0.10, 0.20, 0.30}`.
 - `x_noisy.shape == y_clean.shape == (10,)` per record.
-- Empirical std of `x_noisy - y_clean` per stratum is within tolerance of the labelled `sigma` (sanity check on the noise generator).
+- For every `(realisation_id, window_idx)` group, the four queries `q ∈ {0..3}` produce records that share the same `x_noisy` window and the same `sigma` but have different `C` and different `y_clean`.
+- The empirical std of `x_noisy - sum_k clean_{r,k}_window` per `sigma` stratum is within tolerance of the labelled `2 * sigma` (the mixture noise std, since four independent component noises sum).
 - Splits are disjoint at the realisation level.
-- Stratification proportions hold within ±1 realisation per stratum.
+- Stratification proportions hold within ±1 realisation per `sigma` stratum.
 
 ## 8. Open questions / future work
 - Should we also include a "no-noise" sigma (`0.0`) to verify the model can perfectly pass through clean inputs? Decision: deferred; not in the chosen sigma grid for HW1, but mentioned in the report's "Future work" section.

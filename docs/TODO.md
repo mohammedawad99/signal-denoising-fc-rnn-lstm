@@ -89,6 +89,18 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Final commit.
 - [ ] Build PDF from README and confirm the repo link is present.
 
+## Phase 8 — Correct dataset to noisy mixture extraction
+- [ ] Update docs to the final mixture-extraction formulation (`docs/PRD.md`, `docs/PRD_dataset.md`, `docs/PRD_models.md`).
+- [ ] Update `src/sine_denoising/services/dataset_builder.py` to emit `(window_idx, query_freq)` records over a noisy mixture (with `realisation_id` and `window_idx` carried as bookkeeping fields).
+- [ ] Update `tests/unit/services/test_dataset_builder.py` for the new schema and sigma-only stratification.
+- [ ] Rebuild `data/generated/dataset.npz`.
+- [ ] Retrain FC, RNN, LSTM on the rebuilt dataset.
+- [ ] Re-run `sdk.evaluate` to refresh `results/summary.json`.
+- [ ] Regenerate the reconstruction figure and refresh `assets/report/reconstruction_example.png`.
+- [ ] Update `README.md` with the final mixture-extraction results.
+- [ ] Run the full quality gate (`ruff check .`, `mypy src`, `pytest -q`, file-size check).
+- [ ] Commit and push Phase 8.
+
 ## Cross-cutting reminders
 - After every phase: `git status`, `git diff`, then a focused commit. No omnibus WIP commits.
 - If any assumption from the PRDs changes, edit the PRD *first*, then the code.

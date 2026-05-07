@@ -110,6 +110,19 @@ Outcome: green CI-like gate locally, ready for submission.
 - README link to the GitHub repo present.
 - Final commit: `chore: lint, type, coverage gate green`.
 
+## Phase 8 — Conditional component extraction
+Outcome: dataset, training, evaluation, and report all reflect the noisy-mixture extraction task — `x_noisy` is a window of the summed mixture and `y_clean` is the clean window of the component selected by `C` (see `docs/PRD.md` §2 and `docs/PRD_dataset.md` §2).
+
+Steps:
+- **Docs (8A).** Update `docs/PRD.md`, `docs/PRD_dataset.md`, and `docs/PRD_models.md` to describe the mixture-extraction task; commit.
+- **Builder (8B).** Refactor `src/sine_denoising/services/dataset_builder.py` so each realisation produces one noisy mixture and the four clean components, then emits one record per `(window_idx, query_freq)` pair (with `realisation_id` and `window_idx` carried as bookkeeping fields per `docs/PRD_dataset.md` §3.2). Update `tests/unit/services/test_dataset_builder.py` for the new schema and the sigma-only stratification.
+- **Regenerate data.** Rebuild `data/generated/dataset.npz` from the new builder.
+- **Retrain.** Run `uv run python -m sine_denoising.sdk.train --model {fc,rnn,lstm}` and refresh `results/checkpoints/*.pt` (no model-code change is expected since the external interface is unchanged).
+- **Re-evaluate.** Run `uv run python -m sine_denoising.sdk.evaluate` to refresh `results/summary.json` and `assets/generated/reconstruction_example.png`; copy the figure into `assets/report/` for the committed report asset.
+- **Update README.** Replace the results tables, discussion, and any wording that still describes single-channel denoising with the new mixture-extraction numbers and framing.
+- **Quality gate.** `ruff check .`, `mypy src`, `pytest -q`, file-size sanity.
+- **Push.** Commit each step as it lands and push the final state of `main`.
+
 ## Cross-cutting rules
 - One responsibility per file. If a file approaches 150 lines, split it.
 - Tests live under `tests/unit/` mirroring the source tree; integration-style tests (full small training loop) live under `tests/integration/`.

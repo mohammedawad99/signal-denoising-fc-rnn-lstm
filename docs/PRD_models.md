@@ -12,7 +12,7 @@ All three models implement the same external signature:
 forward(x_noisy: (B, 10), C: (B, 4), sigma: (B, 1)) -> y_pred: (B, 10)
 ```
 
-`B` is the batch size. The internal way the inputs are combined differs by architecture (see §3–§5).
+`B` is the batch size. `x_noisy` is a 10-sample window of the noisy mixture (see `docs/PRD_dataset.md` §2), `C` is the one-hot query selecting which of the four frequency components to reconstruct, and `y_pred` is the predicted clean window of that selected component. The internal way the inputs are combined differs by architecture (see §3–§5).
 
 ### 2.2 Loss and metrics
 - Training loss: `MSE(y_pred, y_clean)` (mean over batch and time).
