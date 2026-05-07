@@ -81,12 +81,12 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Commit Phase 6.
 
 ## Phase 7 — Quality gate and packaging
-- [ ] `uv sync` runs clean.
-- [ ] `uv run ruff check .` passes.
-- [ ] `uv run mypy src` passes.
-- [ ] `uv run pytest --cov` ≥ 85%.
-- [ ] Sanity-check that every Python file is < 150 lines.
-- [ ] Final commit.
+- [x] `uv sync` runs clean.
+- [x] `uv run ruff check .` passes.
+- [x] `uv run mypy src` passes.
+- [x] `uv run pytest --cov` ≥ 85%.
+- [x] Sanity-check that every Python file is < 150 lines.
+- [x] Final commit.
 - [ ] Build PDF from README and confirm the repo link is present.
 
 ## Cross-cutting reminders
