@@ -115,8 +115,8 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Re-run evaluation.
 - [x] Regenerate report figures.
 - [x] Update README with final fs=1000 results and analysis.
-- [ ] Run full quality gate.
-- [ ] Commit and push Phase 10.
+- [x] Run full quality gate.
+- [x] Commit and push Phase 10.
 
 ## Cross-cutting reminders
 - After every phase: `git status`, `git diff`, then a focused commit. No omnibus WIP commits.
