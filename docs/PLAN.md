@@ -119,7 +119,7 @@ Steps:
 - **Regenerate data.** Rebuild `data/generated/dataset.npz` from the new builder.
 - **Retrain.** Run `uv run python -m sine_denoising.sdk.train --model {fc,rnn,lstm}` and refresh `results/checkpoints/*.pt` (no model-code change is expected since the external interface is unchanged).
 - **Re-evaluate.** Run `uv run python -m sine_denoising.sdk.evaluate` to refresh `results/summary.json` and `assets/generated/reconstruction_example.png`; copy the figure into `assets/report/` for the committed report asset.
-- **Update README.** Replace the results tables, discussion, and any wording that still describes single-channel denoising with the new mixture-extraction numbers and framing.
+- **Update README.** Replace the results tables, discussion, and any wording that still describes isolated-component recovery with the new mixture-extraction numbers and framing.
 - **Quality gate.** `ruff check .`, `mypy src`, `pytest -q`, file-size sanity.
 - **Push.** Commit each step as it lands and push the final state of `main`.
 
