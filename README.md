@@ -56,6 +56,30 @@ With `fs = 50 Hz` and `T = 10` samples, a single window spans **0.2 s**. The fou
 
 The mixture therefore contains both slowly- and rapidly-varying components, every frequency stays safely below the Nyquist limit of 25 Hz, and the per-frequency analysis (§6.4) shows how the model's behaviour changes as the in-window oscillation count grows from 0.2 to 2.
 
+### Mixture-query structure
+
+Every unique `(realisation_id, window_idx)` pair generates **four** dataset records — one per query frequency. The four records share the same `x_noisy` window (the same window of the same noisy mixture) and the same `sigma`; only `C` and `y_clean` change between them:
+
+- record 1 has `C = [1, 0, 0, 0]` → `y_clean` is the clean **1 Hz** component window;
+- record 2 has `C = [0, 1, 0, 0]` → `y_clean` is the clean **2 Hz** component window;
+- record 3 has `C = [0, 0, 1, 0]` → `y_clean` is the clean **5 Hz** component window;
+- record 4 has `C = [0, 0, 0, 1]` → `y_clean` is the clean **10 Hz** component window.
+
+This is the structural reason the task is *conditional component extraction* rather than recovery of an already-isolated component: with a fixed mixture input the model has to use `C` as a query to pick the right one of four overlapping waveforms.
+
+![Mixture query example](assets/report/mixture_query_example.png)
+
+### Dataset correctness checks
+
+The behaviour above is enforced by unit tests in `tests/unit/services/`:
+
+- every `(realisation_id, window_idx)` query group has exactly four records;
+- the four `C` vectors are the canonical one-hots `[1,0,0,0]`, `[0,1,0,0]`, `[0,0,1,0]`, `[0,0,0,1]`;
+- `x_noisy` is identical across the four records in a group;
+- `y_clean` differs across queries (otherwise the extraction would be trivial);
+- splits are stratified at the **realisation** level, so all four queries × all 50 windows of one mixture stay together — no leakage across train, val, and test;
+- a dedicated `sigma = 0` test verifies that, with no noise, `x_noisy` matches the sum of the four `y_clean` component windows within numerical tolerance for every query group, proving `x_noisy` is the combined mixture rather than any single component.
+
 ## 3. Model architectures
 
 All three models share the external signature `forward(x_noisy, C, sigma) -> y_pred ∈ R^10`. Only the way the inputs are combined and the backbone differ.
