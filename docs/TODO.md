@@ -99,8 +99,8 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Re-run `sdk.evaluate` to refresh `results/summary.json`.
 - [x] Regenerate the reconstruction figure and refresh `assets/report/reconstruction_example.png`.
 - [x] Update `README.md` with the final mixture-extraction results.
-- [ ] Run the full quality gate (`ruff check .`, `mypy src`, `pytest -q`, file-size check).
-- [ ] Commit and push Phase 8.
+- [x] Run the full quality gate (`ruff check .`, `mypy src`, `pytest -q`, file-size check).
+- [x] Commit and push Phase 8.
 
 ## Cross-cutting reminders
 - After every phase: `git status`, `git diff`, then a focused commit. No omnibus WIP commits.
