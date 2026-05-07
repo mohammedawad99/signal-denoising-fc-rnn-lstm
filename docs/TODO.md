@@ -61,10 +61,11 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 ## Phase 5 — Evaluation and plotting
 - [x] `src/sine_denoising/evaluation/metrics.py`.
 - [x] `src/sine_denoising/evaluation/plots.py`.
-- [ ] `src/sine_denoising/evaluation/report.py`.
+- [x] `src/sine_denoising/evaluation/report.py`.
 - [ ] `src/sine_denoising/sdk/evaluate.py` CLI.
 - [x] `tests/unit/evaluation/test_metrics.py`.
 - [x] `tests/unit/evaluation/test_plots.py` (output file exists, non-empty).
+- [x] `tests/unit/evaluation/test_report.py`.
 - [ ] Run evaluation, write `results/summary.json` + figures.
 - [ ] Commit Phase 5.
 
