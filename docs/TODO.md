@@ -112,7 +112,7 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] Update dataset count and stratification tests for 400,000 records.
 - [x] Rebuild dataset with fs=1000.
 - [x] Retrain FC, RNN, LSTM.
-- [ ] Re-run evaluation.
+- [x] Re-run evaluation.
 - [ ] Regenerate report figures.
 - [ ] Update README with final fs=1000 results and analysis.
 - [ ] Run full quality gate.
