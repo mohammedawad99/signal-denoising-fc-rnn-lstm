@@ -87,7 +87,7 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] `uv run pytest --cov` ≥ 85%.
 - [x] Sanity-check that every Python file is < 150 lines.
 - [x] Final commit.
-- [ ] Build PDF from README and confirm the repo link is present.
+- [ ] Create final submission PDF with student name(s) and GitHub repository link.
 
 ## Phase 8 — Correct dataset to noisy mixture extraction
 - [x] Update docs to the final mixture-extraction formulation (`docs/PRD.md`, `docs/PRD_dataset.md`, `docs/PRD_models.md`).
