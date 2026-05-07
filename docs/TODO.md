@@ -67,8 +67,8 @@ A flat checklist mirroring `PLAN.md`. Tick boxes as we go. Group titles match th
 - [x] `tests/unit/evaluation/test_plots.py` (output file exists, non-empty).
 - [x] `tests/unit/evaluation/test_report.py`.
 - [x] `tests/unit/sdk/test_evaluate_cli.py`.
-- [ ] Run evaluation, write `results/summary.json` + figures.
-- [ ] Commit Phase 5.
+- [x] Run evaluation, write `results/summary.json` + figures.
+- [x] Commit Phase 5.
 
 ## Phase 6 — Lab report
 - [ ] Fill in README "Experimental setup" with concrete config values.
